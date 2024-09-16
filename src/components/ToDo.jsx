@@ -33,13 +33,16 @@ export default function ToDo() {
   };
 
   const handleCompleteAll = () => {
+    const allCompleted = newTodo.every((todoItem) => todoItem.completed);
+  
     setNewTodo((prevTodos) =>
       prevTodos.map((todoItem) => ({
         ...todoItem,
-        completed: !todoItem.completed, 
+        completed: !allCompleted, 
       }))
     );
   };
+  
 
   const handleDelete = () => {
     setNewTodo(prevTodo => prevTodo.filter((todoItem) => !todoItem.completed))
