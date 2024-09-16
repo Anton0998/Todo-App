@@ -1,4 +1,4 @@
-import { Button, FloatingLabel, Form, ListGroup, button } from "react-bootstrap/";
+import { Button, FloatingLabel, Form, ListGroup } from "react-bootstrap/";
 import { useState } from "react";
 
 export default function ToDo() {
@@ -32,6 +32,15 @@ export default function ToDo() {
     );
   };
 
+  const handleCompleteAll = () => {
+    setNewTodo((prevTodos) =>
+      prevTodos.map((todoItem) => ({
+        ...todoItem,
+        completed: true
+      }))
+    );
+  };
+
   const handleDelete = () => {
     setNewTodo(prevTodo => prevTodo.filter((todoItem) => !todoItem.completed))
   }
@@ -47,7 +56,11 @@ export default function ToDo() {
             onChange={(e) => setTask(e.target.value)}
           />
         </FloatingLabel>
-        <Button onClick={handleDelete} className="mb-2" size='sm' variant="outline-danger">Slet færdige</Button>
+        <div className="d-flex gap-2">
+          <Button onClick={handleDelete} className="mb-2" size='sm' variant="outline-danger">Slet færdige</Button>  
+          <Button onClick={handleCompleteAll} className="mb-2" size='sm' variant="outline-primary">markér alle</Button>  
+        </div>
+    
         <ListGroup>
           {newTodo.map((todoItem) => (
             <ListGroup.Item
