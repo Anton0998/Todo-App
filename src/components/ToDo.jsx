@@ -36,7 +36,7 @@ export default function ToDo() {
     setNewTodo((prevTodos) =>
       prevTodos.map((todoItem) => ({
         ...todoItem,
-        completed: true
+        completed: !todoItem.completed, 
       }))
     );
   };
