@@ -1,5 +1,5 @@
 import './App.css';
-import ToDo from './components/ToDo';
+import TodoList from './components/TodoList';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
@@ -8,7 +8,7 @@ function App() {
       <h1 className='text-center'>
         To-do list
       </h1>
-      <ToDo />
+      <TodoList/>
     </div>
   );
 }
