@@ -1,40 +1,38 @@
-import { Button, FloatingLabel, Form, ListGroup, Badge } from "react-bootstrap/";
+import { Button, FloatingLabel, Form } from "react-bootstrap/";
 import { useState } from "react";
-import ShowProgress from './ShowProgress'
-// import HandlePriority from "./HandlePriority"; 
+import { FilterTodos, SortControl } from './FilterTodos'; // Importér din nye FilterTodos-komponent
 
 export default function TodoList() {
   const initialTodos = [
-    {id: crypto.randomUUID(), title: 'Vaske tøj', completed: false, priority: 'high'},
-    {id: crypto.randomUUID(), title: 'Skifte sengetøj', completed: false, priority: 'low'},
-    {id: crypto.randomUUID(), title: 'Handle ind', completed: false, priority: 'medium'},
-    {id: crypto.randomUUID(), title: 'Lave mad', completed: false, priority: 'medium'},
-    {id: crypto.randomUUID(), title: 'Træne', completed: false, priority: 'high'},
-  ]
+    { id: crypto.randomUUID(), title: 'Vaske tøj', completed: false, priority: 'low' },
+    { id: crypto.randomUUID(), title: 'Skifte sengetøj', completed: false, priority: 'medium' },
+    { id: crypto.randomUUID(), title: 'Handle ind', completed: false, priority: 'high' },
+    { id: crypto.randomUUID(), title: 'Lave mad', completed: false, priority: 'low' },
+    { id: crypto.randomUUID(), title: 'Træne', completed: false, priority: 'high' },
+  ];
 
   const [task, setTask] = useState("");
+  const [priority, setPriority] = useState("low"); 
   const [newTodo, setNewTodo] = useState(initialTodos);
-  const [priority, setPriority] = useState('low')
+  const [sortCriteria, setSortCriteria] = useState(''); // Manage sort criteria
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (task.trim() === '') {
-      return null
-    };
+    if (task.trim() === "") return; 
 
     setNewTodo((prev) => [
       ...prev,
       {
-        id: crypto.randomUUID(), // Generer et unikt id for hver opgave
+        id: crypto.randomUUID(), 
         title: task,
         completed: false,
         priority: priority, 
       },
     ]);
 
-    setTask('');
-    setPriority('');
+    setTask("");
+    setPriority("low"); 
   };
 
   const handleComplete = (id) => {
@@ -51,78 +49,48 @@ export default function TodoList() {
     setNewTodo((prevTodos) =>
       prevTodos.map((todoItem) => ({
         ...todoItem,
-        completed: !allCompleted, 
+        completed: !allCompleted,
       }))
     );
   };
 
   const handleDelete = () => {
-    setNewTodo(prevTodo => prevTodo.filter((todoItem) => !todoItem.completed))
-  }
-
-  const getBadgeVariant = (priority) => {
-    switch (priority) {
-      case 'high':
-        return 'danger';
-      case 'medium':
-        return 'warning';
-      case 'low':
-        return 'success';
-      default:
-        return 'secondary';
-    }
+    setNewTodo((prevTodos) => prevTodos.filter((todoItem) => !todoItem.completed));
   };
 
   return (
-    <div className="m-auto col-6">
+    <div className="col-6 m-auto my-3">
       <form onSubmit={handleSubmit}>
-        <div>
-          <FloatingLabel label="Enter task:" className="d-flex gap-2 mb-6">
-            <Form.Control
-              style={{ flex: '3' }}
-              type="text"
-              placeholder="Enter task"
-              value={task}
-              onChange={(e) => setTask(e.target.value)}
-            />
-            <Form.Select onSelect={e => setPriority(e.target.value)} style={{ flex: '1' }}>
-              <option className='align-items-center' >Vælg prioritet</option>
-              <option value="low">Lav</option>
-              <option value="medium">Mellem</option>
-              <option value="high">Høj</option>
-            </Form.Select>
-          </FloatingLabel>
-        </div>
-        <dir className='my-4'>
-          <ShowProgress todos={newTodo} />
-        </dir>
+        <FloatingLabel label="Enter task:" className="d-flex gap-2 my-5">
+          <Form.Control
+            type="text"
+            placeholder="Enter task"
+            value={task}
+            onChange={(e) => setTask(e.target.value)}
+            style={{ flex: "3" }} 
+          />
+          <Form.Select
+            value={priority} 
+            onChange={(e) => setPriority(e.target.value)}
+            style={{ flex: "1" }} 
+          >
+            <option value="low">Lav</option>
+            <option value="medium">Mellem</option>
+            <option value="high">Høj</option>
+          </Form.Select>
+        </FloatingLabel>
+
         <div className="d-flex gap-2">
-          <Button onClick={handleDelete} className="mb-2" size='sm' variant="outline-danger">Slet færdige</Button>  
-          <Button onClick={handleCompleteAll} className="mb-2" size='sm' variant="outline-primary">markér alle</Button>  
+          <Button onClick={handleDelete} className="mb-2" size="sm" variant="outline-danger">
+            Slet færdige
+          </Button>
+          <Button onClick={handleCompleteAll} className="mb-2" size="sm" variant="outline-primary">
+            Markér alle
+          </Button>
+          <SortControl onSortChange={setSortCriteria} /> {/* Pass the function */}
         </div>
-        <ListGroup>
-          {newTodo.map((todoItem) => (
-            <ListGroup.Item
-              className='d-flex gap-2 align-items-center'
-              key={todoItem.id}
-              style={{
-                textDecoration: todoItem.completed ? "line-through" : "none",
-                opacity: todoItem.completed ? 0.5 : 1, 
-                cursor: 'pointer',
-              }}
-              onClick={() => handleComplete(todoItem.id)}
-            >
-              <Form.Check
-                type="checkbox"
-                checked={todoItem.completed} 
-              />
-              <Badge bg={getBadgeVariant(todoItem.priority)}>
-                  {todoItem.priority}
-              </Badge>
-              {todoItem.title}
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
+        
+        <FilterTodos todos={newTodo} onComplete={handleComplete} sortCriteria={sortCriteria} /> {/* Pass sort criteria */}
       </form>
     </div>
   );
