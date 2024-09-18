@@ -1,6 +1,7 @@
 import { Button, FloatingLabel, Form } from "react-bootstrap/";
 import { useState } from "react";
 import { FilterTodos, SortControl } from './FilterTodos'; // Importér din nye FilterTodos-komponent
+import ShowProgress from './ShowProgress'
 
 export default function TodoList() {
   const initialTodos = [
@@ -59,9 +60,9 @@ export default function TodoList() {
   };
 
   return (
-    <div className="col-6 m-auto my-3">
+    <div className="col-6 m-auto my-2">
       <form onSubmit={handleSubmit}>
-        <FloatingLabel label="Enter task:" className="d-flex gap-2 my-5">
+        <FloatingLabel label="Enter task:" className="d-flex gap-2 my-4">
           <Form.Control
             type="text"
             placeholder="Enter task"
@@ -79,7 +80,9 @@ export default function TodoList() {
             <option value="high">Høj</option>
           </Form.Select>
         </FloatingLabel>
-
+        <div>
+          <ShowProgress todos={newTodo} /> 
+        </div>
         <div className="d-flex gap-2">
           <Button onClick={handleDelete} className="mb-2" size="sm" variant="outline-danger">
             Slet færdige
@@ -87,10 +90,10 @@ export default function TodoList() {
           <Button onClick={handleCompleteAll} className="mb-2" size="sm" variant="outline-primary">
             Markér alle
           </Button>
-          <SortControl onSortChange={setSortCriteria} /> {/* Pass the function */}
+          <SortControl onSortChange={setSortCriteria} />
         </div>
         
-        <FilterTodos todos={newTodo} onComplete={handleComplete} sortCriteria={sortCriteria} /> {/* Pass sort criteria */}
+        <FilterTodos todos={newTodo} onComplete={handleComplete} sortCriteria={sortCriteria} />
       </form>
     </div>
   );
