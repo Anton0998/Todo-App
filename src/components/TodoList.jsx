@@ -16,6 +16,7 @@ export default function TodoList() {
   const [priority, setPriority] = useState("low"); 
   const [newTodo, setNewTodo] = useState(initialTodos);
   const [sortCriteria, setSortCriteria] = useState(''); // Manage sort criteria
+  const [ascending, setAscending] = useState(true);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -90,10 +91,18 @@ export default function TodoList() {
           <Button onClick={handleCompleteAll} className="mb-2" size="sm" variant="outline-primary">
             Markér alle
           </Button>
-          <SortControl onSortChange={setSortCriteria} />
+          <SortControl onSortChange={(sortBy, ascending) => {
+              setSortCriteria(sortBy);
+              setAscending(ascending);
+            }} />
         </div>
         
-        <FilterTodos todos={newTodo} onComplete={handleComplete} sortCriteria={sortCriteria} />
+        <FilterTodos 
+        todos={newTodo} 
+        sortCriteria={sortCriteria} 
+        ascending={ascending}
+        onComplete={handleComplete}
+        />
       </form>
     </div>
   );

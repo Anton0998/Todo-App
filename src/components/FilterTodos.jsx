@@ -7,82 +7,94 @@ const priorityMap = {
     high: 3,
 };
 
-const sortItems = (items, sortBy) => {
+const sortItems = (items, sortBy, ascending) => {
     return items.sort((a, b) => {
+        let comparison = 0;
+
         if (sortBy === 'priority') {
-            return priorityMap[a.priority] - priorityMap[b.priority];
+            comparison = priorityMap[a.priority] - priorityMap[b.priority];
         } else if (sortBy === 'title') {
-            return a.title.localeCompare(b.title);
+            comparison = a.title.localeCompare(b.title)
         }
-        return 0;
+        
+        return ascending ? comparison : -comparison; 
     });
 };
 
-const SortControl = ({ onSortChange }) => {
+const SortControl = ({ onSortChange, onToggleDirection }) => {
     const [sortCriteria, setSortCriteria] = useState('');
-
-    const handleSortChange = (e) => {
-        const selectedSort = e.target.value;
-        setSortCriteria(selectedSort);
-        if (onSortChange) {
-            onSortChange(selectedSort); // Call the prop function
-        }
+    
+    const handleSortChange = (sortBy, ascending) => {
+      setSortCriteria(sortBy);
+      onSortChange(sortBy, ascending);
     };
-
+  
     return (
-        <Dropdown className='ms-auto'>
-            <Dropdown.Toggle variant="outline-secondary" size='sm' id="dropdown-basic">
-                Sortér
-            </Dropdown.Toggle>
-
-            <Dropdown.Menu>
-                <Dropdown.Item onClick={() => handleSortChange({ target: { value: 'priority' } })}>
-                    Prioritet
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => handleSortChange({ target: { value: 'title' } })}>
-                    Alfabetisk
-                </Dropdown.Item>
-            </Dropdown.Menu>
-        </Dropdown>
+      <Dropdown className='ms-auto'>
+        <Dropdown.Toggle variant="outline-secondary" size='sm' id="dropdown-basic">
+          Sortér
+        </Dropdown.Toggle>
+  
+        <Dropdown.Menu>
+          {/* Prioritet Sortering */}
+          <Dropdown.Item onClick={() => handleSortChange('priority', true)}>
+            Prioritet <span className='text-secondary '>↑</span>
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => handleSortChange('priority', false)}>
+            Prioritet <span className='text-secondary '>↓</span>
+          </Dropdown.Item>
+  
+          {/* Alfabetisk Sortering */}
+          <Dropdown.Item onClick={() => handleSortChange('title', true)}>
+            Alfabetisk <span className='text-secondary '>a-z</span>
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => handleSortChange('title', false)}>
+            Alfabetisk <span className='text-secondary '>z-a</span>
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
     );
-};
+  };
+  
 
-function FilterTodos({ todos, onComplete, sortCriteria }) {
-    const sortedTodos = sortItems([...todos], sortCriteria);
+  function FilterTodos({ todos, onComplete, sortCriteria, ascending }) {
 
+    const sortedTodos = sortItems([...todos], sortCriteria, ascending);
+  
     return (
-        <div>
-            {/* Liste over sorteret TodoItems */}
-            <ListGroup>
-                {sortedTodos.map((todoItem) => (
-                    <ListGroup.Item
-                        key={todoItem.id}
-                        className="d-flex align-items-center gap-2"
-                        style={{
-                            textDecoration: todoItem.completed ? "line-through" : "none",
-                            opacity: todoItem.completed ? 0.5 : 1,
-                            cursor: 'pointer',
-                        }}
-                        onClick={() => onComplete(todoItem.id)}
-                    >
-                        <Form.Check type="checkbox" checked={todoItem.completed} readOnly />
-                        <Badge
-                            bg={
-                                todoItem.priority === 'high'
-                                    ? 'danger'
-                                    : todoItem.priority === 'medium'
-                                    ? 'warning'
-                                    : 'success'
-                            }
-                        >
-                            {todoItem.priority}
-                        </Badge>
-                        {todoItem.title}
-                    </ListGroup.Item>
-                ))}
-            </ListGroup>
-        </div>
+      <div>
+        {/* Liste over sorteret TodoItems */}
+        <ListGroup>
+          {sortedTodos.map((todoItem) => (
+            <ListGroup.Item
+              key={todoItem.id}
+              className="d-flex align-items-center gap-2"
+              style={{
+                textDecoration: todoItem.completed ? "line-through" : "none",
+                opacity: todoItem.completed ? 0.5 : 1,
+                cursor: 'pointer',
+              }}
+              onClick={() => onComplete(todoItem.id)}
+            >
+              <Form.Check type="checkbox" checked={todoItem.completed} readOnly />
+              <Badge
+                bg={
+                  todoItem.priority === 'high'
+                    ? 'danger'
+                    : todoItem.priority === 'medium'
+                    ? 'warning'
+                    : 'success'
+                }
+              >
+                {todoItem.priority}
+              </Badge>
+              {todoItem.title}
+            </ListGroup.Item>
+          ))}
+        </ListGroup>
+      </div>
     );
-}
+  }
+  
 
 export { FilterTodos, SortControl };
