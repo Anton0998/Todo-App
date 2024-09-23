@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Dropdown, ListGroup, Form, Badge } from "react-bootstrap/";
+import EditTodos from './EditTodos';
 
 const priorityMap = {
     low: 1,
@@ -31,7 +32,7 @@ const SortControl = ({ onSortChange, onToggleDirection }) => {
   
     return (
       <Dropdown className='ms-auto'>
-        <Dropdown.Toggle variant="outline-secondary" size='sm' id="dropdown-basic">
+        <Dropdown.Toggle variant="secondary" size='sm' id="dropdown-basic">
           Sortér
         </Dropdown.Toggle>
   
@@ -57,7 +58,7 @@ const SortControl = ({ onSortChange, onToggleDirection }) => {
   };
   
 
-  function FilterTodos({ todos, onComplete, sortCriteria, ascending }) {
+  function FilterTodos({ todos, handleSaveEdit, onComplete, sortCriteria, ascending }) {
 
     const sortedTodos = sortItems([...todos], sortCriteria, ascending);
   
@@ -89,6 +90,7 @@ const SortControl = ({ onSortChange, onToggleDirection }) => {
                 {todoItem.priority}
               </Badge>
               {todoItem.title}
+              <EditTodos todoItem={todoItem} handleSaveEdit={handleSaveEdit} />
             </ListGroup.Item>
           ))}
         </ListGroup>

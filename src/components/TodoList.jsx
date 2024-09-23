@@ -60,6 +60,14 @@ export default function TodoList() {
     setNewTodo((prevTodos) => prevTodos.filter((todoItem) => !todoItem.completed));
   };
 
+  const handleSaveEdit = (id, newTitle) => {
+    setNewTodo((prevTodos) =>
+      prevTodos.map((todo) =>
+        todo.id === id ? { ...todo, title: newTitle } : todo
+      )
+    );
+  };
+
   return (
     <div className="col-6 m-auto my-2">
       <form onSubmit={handleSubmit}>
@@ -98,10 +106,12 @@ export default function TodoList() {
         </div>
         
         <FilterTodos 
-        todos={newTodo} 
-        sortCriteria={sortCriteria} 
-        ascending={ascending}
-        onComplete={handleComplete}
+          todos={newTodo} 
+          setTodos={setNewTodo} 
+          handleSaveEdit={handleSaveEdit} 
+          sortCriteria={sortCriteria} 
+          ascending={ascending} 
+          onComplete={handleComplete} 
         />
       </form>
     </div>
