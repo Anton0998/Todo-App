@@ -60,10 +60,10 @@ export default function TodoList() {
     setNewTodo((prevTodos) => prevTodos.filter((todoItem) => !todoItem.completed));
   };
 
-  const handleSaveEdit = (id, newTitle) => {
+  const handleSaveEdit = (id, newTitle, newPriority) => {
     setNewTodo((prevTodos) =>
       prevTodos.map((todo) =>
-        todo.id === id ? { ...todo, title: newTitle } : todo
+        todo.id === id ? { ...todo, title: newTitle, priority: newPriority } : todo
       )
     );
   };

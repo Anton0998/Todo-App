@@ -3,14 +3,15 @@ import { Modal, Button, Form } from 'react-bootstrap/';
 
 export default function EditTodos({ todoItem, handleSaveEdit }) {
     const [showModal, setShowModal] = useState(false);
-    const [editTodo, setEditTodo] = useState(todoItem.title); // Start med den nuværende titel
+    const [editTodo, setEditTodo] = useState(todoItem.title);
+    const [editPriority, setEditPriority] = useState(todoItem.priority)
 
     const handleClose = () => setShowModal(false);
     const handleShow = () => setShowModal(true);
 
     const handleSave = () => {
-        handleSaveEdit(todoItem.id, editTodo); // Kald handleSaveEdit med todoItem's id og den nye titel
-        handleClose(); // Luk modalet
+        handleSaveEdit(todoItem.id, editTodo, editPriority); 
+        handleClose(); 
     };
 
     return (
@@ -35,6 +36,19 @@ export default function EditTodos({ todoItem, handleSaveEdit }) {
                         onChange={(e) => setEditTodo(e.target.value)}
                         onSubmit={handleSave}
                         />
+                        <div className='my-2 d-flex gap-4 align-items-baseline'>
+                            <p className='text-muted'>Redigét prioritet:</p>
+                            <Form.Select
+                                className='my-3'
+                                onChange={(e) => setEditPriority(e.target.value)}
+                                value={editPriority} 
+                                style={{ flex: "1" }} 
+                                >
+                                <option value="low">Lav</option>
+                                <option value="medium">Mellem</option>
+                                <option value="high">Høj</option>
+                            </Form.Select>
+                        </div>
                     </Form.Group>
                 </Form>
             </Modal.Body>
